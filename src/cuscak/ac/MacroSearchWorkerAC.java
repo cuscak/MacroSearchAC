@@ -48,7 +48,7 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
             while ((line = reader.readLine()) != null){
                 String[] temp = line.split("\",\"");
                 if(temp.length > 1){
-                    if(temp[macro].trim().contains(value)){
+                    if(temp[macro].trim().matches(value)){
                         try(BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName, true))){
                             writer.write(line);
                             writer.newLine();

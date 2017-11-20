@@ -133,14 +133,15 @@ public class MacroSearchAC extends Frame implements ActionListener{
                 macro = Integer.parseInt(macroField.getText());
                 macroProvided = true;
             }catch (NumberFormatException exception){
-                JOptionPane.showMessageDialog(this,"MACRo can be only a NUMBER","NOT a NUMBER", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,"MACRO can be only a NUMBER","NOT a NUMBER", JOptionPane.ERROR_MESSAGE);
             }
         }
 
-        if(valueField.getText().trim().isEmpty() & macroProvided){
-            JOptionPane.showMessageDialog(this,"What VALUE to search for?","Empty VALUE", JOptionPane.WARNING_MESSAGE);
-        }else{
+        if(macroProvided){
             value = valueField.getText().trim();
+            if(value.isEmpty()){
+                value = "^$";
+            }
             valueProvided = true;
         }
 
@@ -162,9 +163,6 @@ public class MacroSearchAC extends Frame implements ActionListener{
     }
 
     private void doSearch(String extension, int macro, String value) {
-
-        //Path directory = Paths.get("").toAbsolutePath();
-
         MacroSearchWorkerAC msw = new MacroSearchWorkerAC(extension, macro, value);
         try {
             Files.walkFileTree(Paths.get(directory), msw);
