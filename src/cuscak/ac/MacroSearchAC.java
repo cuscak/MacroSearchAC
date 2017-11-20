@@ -22,7 +22,6 @@ public class MacroSearchAC extends Frame implements ActionListener{
     private Choice fileExtField;
     private JTextField macroField;
     private JTextField valueField;
-    private String outFileName;
     private JFileChooser jFileChooser;
 
     private String directory;
@@ -154,8 +153,6 @@ public class MacroSearchAC extends Frame implements ActionListener{
 
         int transformedMacro = checkAdminfileds(macro, extension);
 
-        outFileName = String.valueOf(System.currentTimeMillis()) + "_Macro-" + macro + "_Value-" + value +"_em." + extension;
-
         if(macroProvided & valueProvided & dirProvided){
             doSearch(extension, transformedMacro, value);
             //dialog window to say that job is done and closing the  app
@@ -171,17 +168,6 @@ public class MacroSearchAC extends Frame implements ActionListener{
         MacroSearchWorkerAC msw = new MacroSearchWorkerAC(extension, macro, value);
         try {
             Files.walkFileTree(Paths.get(directory), msw);
-            ArrayList<String> result = msw.getOutputToWrite();
-
-            try(BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName))){
-                for (String s:result) {
-                    writer.write(s);
-                    writer.newLine();
-                }
-            } catch (IOException e) {
-                System.out.println("Something wrong with writing to the file");
-                e.printStackTrace();
-            }
         } catch (IOException e) {
             System.out.println("Something wrong with looping through files");
             e.printStackTrace();

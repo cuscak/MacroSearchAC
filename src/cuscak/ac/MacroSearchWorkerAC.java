@@ -11,11 +11,15 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
     private PathMatcher matcher;
     private int macro;
     private String value;
-    private ArrayList<String> outputToWrite = new ArrayList();
+    private String outFileName;
 
     public MacroSearchWorkerAC (String ext, int macroToCompare, String valueToSearch) {
         macro = macroToCompare;
         value = valueToSearch;
+
+        macroToCompare += 1;    //adding 1 so its correct in the file name
+
+        outFileName = String.valueOf(System.currentTimeMillis()) + "_Macro-" + macroToCompare + "_Value-" + value +"_em." + ext;
 
         matcher = FileSystems.getDefault().getPathMatcher("glob:*." + ext);
     }
@@ -45,7 +49,13 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
                 String[] temp = line.split("\",\"");
                 if(temp.length > 1){
                     if(temp[macro].trim().contains(value)){
-                        outputToWrite.add(line);
+                        try(BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName, true))){
+                            writer.write(line);
+                            writer.newLine();
+                        } catch (IOException e) {
+                            System.out.println("Something wrong with writing to the file");
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -54,9 +64,4 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
             e.printStackTrace();
         }
     }
-
-    public ArrayList<String> getOutputToWrite() {
-        return outputToWrite;
-    }
-
 }
