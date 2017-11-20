@@ -171,22 +171,11 @@ public class MacroSearchAC extends Frame implements ActionListener{
         MacroSearchWorkerAC msw = new MacroSearchWorkerAC(extension, macro, value);
         try {
             Files.walkFileTree(Paths.get(directory), msw);
-            ArrayList<String[]> result = msw.getOutputToWrite();
+            ArrayList<String> result = msw.getOutputToWrite();
 
-            try(BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName));){
-                for (String[] s:result) {
-                    int i = 0;
-                    int j = s.length-1;
-                    for (String v:s) {
-                        if(i == 0) {    //skips first quote for firs macro
-                            writer.write(v + "\",");
-                        }else if(j == i){     //skip last comma and quote
-                            writer.write('"'+ v );
-                        }else{
-                            writer.write('"'+ v + "\",");
-                        }
-                        i++;
-                    }
+            try(BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName))){
+                for (String s:result) {
+                    writer.write(s);
                     writer.newLine();
                 }
             } catch (IOException e) {

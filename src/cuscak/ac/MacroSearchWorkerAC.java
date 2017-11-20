@@ -11,7 +11,7 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
     private PathMatcher matcher;
     private int macro;
     private String value;
-    private ArrayList<String[]> outputToWrite = new ArrayList();
+    private ArrayList<String> outputToWrite = new ArrayList();
 
     public MacroSearchWorkerAC (String ext, int macroToCompare, String valueToSearch) {
         macro = macroToCompare;
@@ -39,13 +39,13 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
     }
 
     private void processLine(Path file) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file)));){
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file)))){
             String line;
             while ((line = reader.readLine()) != null){
                 String[] temp = line.split("\",\"");
                 if(temp.length > 1){
                     if(temp[macro].trim().contains(value)){
-                        outputToWrite.add(temp);
+                        outputToWrite.add(line);
                     }
                 }
             }
@@ -55,7 +55,7 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
         }
     }
 
-    public ArrayList<String[]> getOutputToWrite() {
+    public ArrayList<String> getOutputToWrite() {
         return outputToWrite;
     }
 
