@@ -4,6 +4,8 @@ import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
@@ -45,10 +47,12 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
     private void processLine(Path file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file)))){
             String line;
+            Pattern p = Pattern.compile(value);
             while ((line = reader.readLine()) != null){
                 String[] temp = line.split("\",\"");
                 if(temp.length > 1){
-                    if(temp[macro].trim().matches(value)){
+                    Matcher m = p.matcher(temp[macro]);
+                    if(m.find()){
                         try(BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName, true))){
                             writer.write(line);
                             writer.newLine();
