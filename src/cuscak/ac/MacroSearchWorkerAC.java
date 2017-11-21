@@ -21,7 +21,7 @@ public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
 
         macroToCompare += 1;    //adding 1 so its correct in the file name
 
-        outFileName = String.valueOf(System.currentTimeMillis()) + "_Macro-" + macroToCompare + "_Value-" + value +"_em." + ext;
+        outFileName = String.valueOf(System.currentTimeMillis()) + "_Macro-" + macroToCompare +"_em." + ext;
 
         matcher = FileSystems.getDefault().getPathMatcher("glob:*." + ext);
     }
