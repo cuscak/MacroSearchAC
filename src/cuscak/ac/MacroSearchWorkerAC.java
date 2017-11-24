@@ -9,27 +9,26 @@ import java.util.regex.Pattern;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class MacroSearchWorkerAC extends SimpleFileVisitor<Path> {
-    private PathMatcher matcher;
     private int macro;
     private String value;
+    private String extension;
     private String outFileName;
 
     public MacroSearchWorkerAC (String ext, int macroToCompare, String valueToSearch) {
         macro = macroToCompare;
         value = valueToSearch;
+        extension = "." + ext;
 
         macroToCompare += 1;    //adding 1 so its correct in the file name
 
         outFileName = String.valueOf(System.currentTimeMillis()) + "_Macro-" + macroToCompare +"_em." + ext;
-
-        matcher = FileSystems.getDefault().getPathMatcher("glob:*." + ext);
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
 
-        Path name = file.getFileName();
-        if (name.toString().toUpperCase() != null && matcher.matches(name)) {
+        String name = file.getFileName().toString().toUpperCase();
+        if(name.endsWith(extension)){
             System.out.println("Processing file: " + file.toString());
             processLine(file);
         }
