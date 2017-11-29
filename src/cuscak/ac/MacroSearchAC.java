@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 
@@ -21,7 +22,7 @@ public class MacroSearchAC extends Frame implements ActionListener{
     private JTextField valueField;
     private JFileChooser jFileChooser;
 
-    private String directory;
+    private File[]directories;
 
     public MacroSearchAC(){
         super("Macro Search for SUE");   //create the window
@@ -54,6 +55,7 @@ public class MacroSearchAC extends Frame implements ActionListener{
         jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         jFileChooser.setControlButtonsAreShown(false);
         jFileChooser.addActionListener(this);
+        jFileChooser.setMultiSelectionEnabled(true);
 
         gc.fill = GridBagConstraints.HORIZONTAL;    //REC or NREC label
         gc.gridx = 0;
@@ -145,7 +147,7 @@ public class MacroSearchAC extends Frame implements ActionListener{
         if(jFileChooser.getSelectedFile() == null & macroProvided & valueProvided){
             JOptionPane.showMessageDialog(this,"Select ROOT folder to do the search in","No folder selected", JOptionPane.WARNING_MESSAGE);
         }else{
-            directory = jFileChooser.getSelectedFile().toString();
+            directories = jFileChooser.getSelectedFiles();
             dirProvided = true;
         }
 
@@ -162,7 +164,9 @@ public class MacroSearchAC extends Frame implements ActionListener{
     private void doSearch(String extension, int macro, String value) {
         MacroSearchWorkerAC msw = new MacroSearchWorkerAC(extension, macro, value);
         try {
-            Files.walkFileTree(Paths.get(directory), msw);
+            for(File f:directories){
+                Files.walkFileTree(Paths.get(f.getAbsolutePath()), msw);
+            }
         } catch (IOException e) {
             System.out.println("Something wrong with looping through files");
             e.printStackTrace();
